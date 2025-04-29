@@ -21,11 +21,11 @@ MAIN_MENU(){
     echo "$SERVICE_ID) $NAME"
   done 
   #guardar seleccion del servicio 
-  echo -e "\nType the number of the service:"
   read SERVICE_ID_SELECTED
   
   #validar la seleccion de id
-  if [[ ! $SERVICE_ID_SELECTED =~ ^[0-9]+$ ]]
+  VALID_ID_SELECTED=$($PSQL "SELECT name FROM services WHERE service_id=$SERVICE_ID_SELECTED")
+  if [[ -z $VALID_ID_SELECTED ]]
   then
     # id de servicio invalido
     MAIN_MENU "I could not find that service. What would you like today?"
@@ -38,22 +38,23 @@ MAIN_MENU(){
     read CUSTOMER_PHONE
 
     #validar numero
-    CUSTOMER_PHONE_FORMATED=$(echo $CUSTOMER_PHONES_UNFORMATED | sed 's/[ |-]//g')
+    CUSTOMER_PHONES_NAME=$($PSQL "SELECT name FROM customers WHERE phone='$CUSTOMER_PHONE'")
 
-    CUSTOMER_PHONES_NAME=$($PSQL "SELECT name FROM customers WHERE phone='$CUSTOMER_PHONE_FORMATED'")
 
     if [[ -z $CUSTOMER_PHONES_NAME ]]
     then
       # add customer to database
-      ADD_CLIENT $CUSTOMER_PHONES_NAME
+      ADD_CLIENT $CUSTOMER_PHONE
+      CUSTOMER_PHONES_NAME=$CUSTOMER_NAME
     fi
-    CUSTOMER_PHONES_NAME=$CUSTOMER_NAME
-
+    
     # guardar hora de cita
-    APPOIMENT_TIME $SERVICE_NAME $CUSTOMER_PHONES_NAME
+    echo -e "\nWhat time would you like your $SERVICE_NAME, $(echo $CUSTOMER_PHONES_NAME | sed -r 's/^ *| *$//g')?"
+  
+    read SERVICE_TIME
 
     # guardar cita en la base de datos
-    ADD_APPOIMENT $SERVICE_TIME $CUSTOMER_PHONES_NAME $SERVICE_NAME $SERVICE_ID_SELECTED
+    ADD_APPOINTMENT $SERVICE_TIME $CUSTOMER_PHONES_NAME $SERVICE_NAME $SERVICE_ID_SELECTED
   fi
 }
 
@@ -77,8 +78,7 @@ ADD_CLIENT(){
     # revisar si se agregar correctamente
     if [[ $INSERT_CUSTOMER == 'INSERT 0 1' ]]
     then
-      echo -e "\nError"
-      ADD_CLIENT $1 "That is not a valid name, What's your name?"
+      echo "Anadido"
     fi
   #no es un nombre valido
   else
@@ -86,30 +86,13 @@ ADD_CLIENT(){
   fi
 }
 
-APPOIMENT_TIME(){
-  if [[ $3 ]]
-  then
-    echo -e "\n$3" 
-  else
-    echo -e "\nWhat time would you like your $1, $(echo $2 | sed -r 's/^ *| *$//g')?"
-  fi
-  
-  read SERVICE_TIME
 
-  #validar tiempo horas y minutos formato 24 horas
-  if [[ ! $SERVICE_TIME =~ ^([01]?[0-9]|2[0-3]):[0-5][0-9]$ ]] 
-  then
-  # no es una hora valida
-    APPOIMENT_TIME $1 $2 'That is not a valid time, type another time'
-  fi
-}
-
-ADD_APPOIMENT(){
+ADD_APPOINTMENT(){
   CUSTOMER_ID=$($PSQL "SELECT customer_id FROM customers WHERE name='$2'")
   
-  INSERT_APPOIMENT=$($PSQL "INSER INTO appoiments(time, customer_id, service_id) VALUES('$1', $CUSTOMER_ID, $4)")
+  INSERT_APPOINTMENT=$($PSQL "INSERT INTO appointments(time, customer_id, service_id) VALUES('$1', $CUSTOMER_ID, $4)")
 
-  if [[ $INSERT_APPOIMENT == 'INSERT 0 1' ]]
+  if [[ $INSERT_APPOINTMENT == 'INSERT 0 1' ]]
   then
     echo -e "\nI have put you down for a $3 at $1, $2."
   fi

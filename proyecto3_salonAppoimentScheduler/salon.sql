@@ -44,24 +44,24 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
--- Name: appoiments; Type: TABLE; Schema: public; Owner: freecodecamp
+-- Name: appointments; Type: TABLE; Schema: public; Owner: freecodecamp
 --
 
-CREATE TABLE public.appoiments (
-    appoiment_id integer NOT NULL,
+CREATE TABLE public.appointments (
+    appointment_id integer NOT NULL,
     "time" character varying(10),
     customer_id integer,
     service_id integer
 );
 
 
-ALTER TABLE public.appoiments OWNER TO freecodecamp;
+ALTER TABLE public.appointments OWNER TO freecodecamp;
 
 --
--- Name: appoiments_appoiment_id_seq; Type: SEQUENCE; Schema: public; Owner: freecodecamp
+-- Name: appointments_appointment_id_seq; Type: SEQUENCE; Schema: public; Owner: freecodecamp
 --
 
-CREATE SEQUENCE public.appoiments_appoiment_id_seq
+CREATE SEQUENCE public.appointments_appointment_id_seq
     AS integer
     START WITH 1
     INCREMENT BY 1
@@ -70,13 +70,13 @@ CREATE SEQUENCE public.appoiments_appoiment_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.appoiments_appoiment_id_seq OWNER TO freecodecamp;
+ALTER TABLE public.appointments_appointment_id_seq OWNER TO freecodecamp;
 
 --
--- Name: appoiments_appoiment_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: freecodecamp
+-- Name: appointments_appointment_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: freecodecamp
 --
 
-ALTER SEQUENCE public.appoiments_appoiment_id_seq OWNED BY public.appoiments.appoiment_id;
+ALTER SEQUENCE public.appointments_appointment_id_seq OWNED BY public.appointments.appointment_id;
 
 
 --
@@ -149,10 +149,10 @@ ALTER SEQUENCE public.services_service_id_seq OWNED BY public.services.service_i
 
 
 --
--- Name: appoiments appoiment_id; Type: DEFAULT; Schema: public; Owner: freecodecamp
+-- Name: appointments appointment_id; Type: DEFAULT; Schema: public; Owner: freecodecamp
 --
 
-ALTER TABLE ONLY public.appoiments ALTER COLUMN appoiment_id SET DEFAULT nextval('public.appoiments_appoiment_id_seq'::regclass);
+ALTER TABLE ONLY public.appointments ALTER COLUMN appointment_id SET DEFAULT nextval('public.appointments_appointment_id_seq'::regclass);
 
 
 --
@@ -170,7 +170,7 @@ ALTER TABLE ONLY public.services ALTER COLUMN service_id SET DEFAULT nextval('pu
 
 
 --
--- Data for Name: appoiments; Type: TABLE DATA; Schema: public; Owner: freecodecamp
+-- Data for Name: appointments; Type: TABLE DATA; Schema: public; Owner: freecodecamp
 --
 
 
@@ -193,10 +193,10 @@ INSERT INTO public.services VALUES (5, 'trim');
 
 
 --
--- Name: appoiments_appoiment_id_seq; Type: SEQUENCE SET; Schema: public; Owner: freecodecamp
+-- Name: appointments_appointment_id_seq; Type: SEQUENCE SET; Schema: public; Owner: freecodecamp
 --
 
-SELECT pg_catalog.setval('public.appoiments_appoiment_id_seq', 1, false);
+SELECT pg_catalog.setval('public.appointments_appointment_id_seq', 1, false);
 
 
 --
@@ -214,11 +214,11 @@ SELECT pg_catalog.setval('public.services_service_id_seq', 5, true);
 
 
 --
--- Name: appoiments appoiments_pkey; Type: CONSTRAINT; Schema: public; Owner: freecodecamp
+-- Name: appointments appointments_pkey; Type: CONSTRAINT; Schema: public; Owner: freecodecamp
 --
 
-ALTER TABLE ONLY public.appoiments
-    ADD CONSTRAINT appoiments_pkey PRIMARY KEY (appoiment_id);
+ALTER TABLE ONLY public.appointments
+    ADD CONSTRAINT appointments_pkey PRIMARY KEY (appointment_id);
 
 
 --
@@ -246,19 +246,19 @@ ALTER TABLE ONLY public.services
 
 
 --
--- Name: appoiments appoiments_customer_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: freecodecamp
+-- Name: appointments appointments_customer_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: freecodecamp
 --
 
-ALTER TABLE ONLY public.appoiments
-    ADD CONSTRAINT appoiments_customer_id_fkey FOREIGN KEY (customer_id) REFERENCES public.customers(customer_id);
+ALTER TABLE ONLY public.appointments
+    ADD CONSTRAINT appointments_customer_id_fkey FOREIGN KEY (customer_id) REFERENCES public.customers(customer_id);
 
 
 --
--- Name: appoiments appoiments_service_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: freecodecamp
+-- Name: appointments appointments_service_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: freecodecamp
 --
 
-ALTER TABLE ONLY public.appoiments
-    ADD CONSTRAINT appoiments_service_id_fkey FOREIGN KEY (service_id) REFERENCES public.services(service_id);
+ALTER TABLE ONLY public.appointments
+    ADD CONSTRAINT appointments_service_id_fkey FOREIGN KEY (service_id) REFERENCES public.services(service_id);
 
 
 --
